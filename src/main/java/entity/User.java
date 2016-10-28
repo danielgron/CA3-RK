@@ -3,8 +3,6 @@ package entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -18,7 +16,9 @@ public class User implements IUser, Serializable{
   private String password;  //Pleeeeease dont store me in plain text
   @Id
   private String userName;
-  List<String> roles = new ArrayList();
+  
+  @ManyToMany(cascade = CascadeType.PERSIST)
+  List<User_Role> roles = new ArrayList();
 
 //   List<Role> roles = new ArrayList();
     public User() {
@@ -35,33 +35,27 @@ public class User implements IUser, Serializable{
       }
   }
   
-  public User(String userName, String password,List<String> roles) {
-    this.userName = userName;
-    this.password = password;
-    this.roles = roles;
-//    List<Role> temp = new ArrayList<>();
-//      for (String role : roles) {
-//          temp.add(new Role(role));
-//      }
-//     this.roles = temp;
-  }
   
-  public void addRole(String role){
-    roles.add(role);
-//    roles.add(new Role(role));
+  public void addRoleToUser(User_Role role){
+   if(role != null){
+       roles.add(role);
+       role.addUserToRole(this); // has to add both refrences
+   }
+   else{
+       //ERROR!!!
+   }
   }
     
   @Override
   public List<String> getRolesAsStrings() {
-   return roles;
-//   List<String> temp = new ArrayList<>();
-//      for (Role role : roles) {
-//          temp.add(role.getRoleName());
-//      }
-//      return temp;
-//  }
+   List<String> temp = new ArrayList<>();
+      for (User_Role role : roles) {
+          temp.add(role.getRoleName());
       }
- 
+      return temp;
+  }
+      
+  @Override
   public String getPassword() {
     return password;
   }
@@ -70,6 +64,7 @@ public class User implements IUser, Serializable{
     this.password = password;
   }
 
+  @Override
   public String getUserName() {
     return userName;
   }
@@ -77,7 +72,10 @@ public class User implements IUser, Serializable{
   public void setUserName(String userName) {
     this.userName = userName;
   }
-
- 
-          
+  
+  
+  public void removeRoleFromUser(User_Role role){
+      roles.remove(role);
+      role.removeUserFromRole(this);
+  }        
 }

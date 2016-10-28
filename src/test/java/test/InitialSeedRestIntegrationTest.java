@@ -77,18 +77,6 @@ public class InitialSeedRestIntegrationTest {
             .body("message", equalTo("REST call accesible by only authenticated ADMINS"))
             .body("serverTime",notNullValue());
   }
-
-  @Test
-  public void testRestForUser() {
-    login("user","test");
-    given()
-            .contentType("application/json")
-            .header("Authorization", "Bearer " + securityToken)
-            .when()
-            .get("/api/demouser").then()
-            .statusCode(200)
-            .body("message", equalTo("REST call accesible by only authenticated USERS"));
-  }
   
   @Test
   public void userNotAuthenticated() {
