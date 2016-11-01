@@ -25,6 +25,8 @@ public class Log {
         String fileName = "LogFile" + timeStamp + ".txt";
          Logger logger = Logger.getLogger(logName);
          FileHandler file = new FileHandler(fileName);
+         // This places the log file in the bin folder where you have your 
+         // CatalinaBase if you are using an Tomcat Server
          file.setFormatter(new java.util.logging.SimpleFormatter());
          logger.addHandler(file);
     }
